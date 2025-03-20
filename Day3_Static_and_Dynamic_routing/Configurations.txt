@@ -1,0 +1,154 @@
+Day 3: Static and Dynamic Routing
+Objective: Configure static and dynamic routing protocols (RIP or OSPF).
+Tasks:
+
+Set up a network with 3 routers and 2 switches.
+
+Configure static routes between routers.
+
+Implement a dynamic routing protocol (e.g., RIP or OSPF).
+
+Verify routing tables and connectivity across the network.
+
+Devices:
+
+3 × Routers (e.g., Cisco 1941)
+
+2 × 2960 Switches
+
+4 × PCs
+
+Expected Outcomes:
+
+All routers have updated routing tables.
+
+PCs in different subnets can communicate via static and dynamic routing.
+
+Understanding of static and dynamic routing protocols.
+
+Step-by-Step Instructions
+1. Set Up the Network Topology
+Open Cisco Packet Tracer.
+
+Drag and drop the following devices into the workspace:
+
+3 × Routers (1941)
+
+2 × 2960 Switches
+
+4 × PCs
+
+Connect the devices:
+
+Connect PC1 and PC2 to Switch1.
+
+Connect PC3 and PC4 to Switch2.
+
+Connect Switch1 to Router1 (Fa0/0).
+
+Connect Switch2 to Router3 (Fa0/0).
+
+Connect Router1 to Router2 (Serial0/0/0 to Serial0/0/0).
+
+Connect Router2 to Router3 (Serial0/0/1 to Serial0/0/1).
+
+2. Configure IP Addressing
+Assign IP addresses to the devices:
+
+Router1:
+
+Fa0/0: 192.168.10.1/24 (connected to Switch1)
+
+Serial0/0/0: 10.0.0.1/30 (connected to Router2)
+
+Router2:
+
+Serial0/0/0: 10.0.0.2/30 (connected to Router1)
+
+Serial0/0/1: 10.0.0.5/30 (connected to Router3)
+
+Router3:
+
+Fa0/0: 192.168.20.1/24 (connected to Switch2)
+
+Serial0/0/1: 10.0.0.6/30 (connected to Router2)
+
+PC1: 192.168.10.2/24, Gateway: 192.168.10.1
+
+PC2: 192.168.10.3/24, Gateway: 192.168.10.1
+
+PC3: 192.168.20.2/24, Gateway: 192.168.20.1
+
+PC4: 192.168.20.3/24, Gateway: 192.168.20.1
+
+ON ROUTER 1
+enable
+configure terminal
+interface FastEthernet0/0
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+exit
+interface Serial0/0/0
+ip address 10.0.0.1 255.255.255.252
+clock rate 64000 (if DCE)
+no shutdown
+exit
+
+ON ROUTER 2
+enable
+configure terminal
+interface Serial0/0/0
+ip address 10.0.0.2 255.255.255.252
+no shutdown
+exit
+interface Serial0/0/1
+ip address 10.0.0.5 255.255.255.252
+clock rate 64000 (if DCE)
+no shutdown
+exit
+
+ON ROUTER 3
+enable
+configure terminal
+interface FastEthernet0/0
+ip address 192.168.20.1 255.255.255.0
+no shutdown
+exit
+interface Serial0/0/1
+ip address 10.0.0.6 255.255.255.252
+no shutdown
+exit
+
+Configure static routes
+Router 1
+ip route 192.168.20.0 255.255.255.0 10.0.0.2
+Router 3
+ip route 192.168.10.0 255.255.255.0 10.0.0.5
+
+Dynamic Routing OSPF
+Router 1
+router ospf 1
+network 192.168.10.0 0.0.0.255 area 0
+network 10.0.0.0 0.0.0.3 area 0
+exit
+
+Router 2
+router ospf 1
+network 10.0.0.0 0.0.0.3 area 0
+network 10.0.0.4 0.0.0.3 area 0
+exit
+
+Router 3
+router ospf 1
+network 192.168.20.0 0.0.0.255 area 0
+network 10.0.0.4 0.0.0.3 area 0
+exit
+
+Verify Routing Tables
+On each router:
+show ip route
+
+Test Conectivity:
+Ping between PCs in different subnets (e.g., PC1 to PC3).
+
+Ping the router interfaces (e.g., PC1 to 10.0.0.1).
